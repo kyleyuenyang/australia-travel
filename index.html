@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>澳大利亚旅游指南 | 探索澳洲之美</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1D9E75;
+    --teal-dark: #0F6E56;
+    --teal-light: #E1F5EE;
+    --blue: #378ADD;
+    --blue-light: #E6F1FB;
+    --sand: #F9F5EE;
+    --text: #1a2e2a;
+    --text-muted: #5a7a72;
+    --border: rgba(29,158,117,0.15);
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--sand);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background:
+      linear-gradient(160deg, rgba(29,158,117,0.92) 0%, rgba(55,138,221,0.85) 100%),
+      url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1600&q=80') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0; right: 0;
+    height: 80px;
+    background: var(--sand);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  .hero-flag { font-size: 4rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  .hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: rgba(255,255,255,0.9);
+    max-width: 500px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    letter-spacing: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .hero-scroll::after {
+    content: '';
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.4);
+    animation: scrollLine 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollLine { 0%{opacity:0;transform:scaleY(0) translateY(-10px)} 50%{opacity:1} 100%{opacity:0;transform:scaleY(1) translateY(10px)} }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(249,245,238,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0.75rem 0;
+  }
+  .nav-inner::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    white-space: nowrap;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-family: 'Noto Sans SC', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: var(--teal-light); color: var(--teal-dark); }
+  .nav-btn.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+  /* MAIN */
+  .main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+  /* CITY SECTION */
+  .city-section { display: none; animation: fadeIn 0.3s ease; }
+  .city-section.active { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+  .city-header {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--teal-light);
+  }
+
+  .city-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .city-name {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 600;
+    color: var(--teal-dark);
+    line-height: 1.2;
+  }
+
+  .city-name-en {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 2px;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .city-desc {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 0;
+  }
+
+  /* SPOTS GRID */
+  .spots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .spot-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spot-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--blue));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .spot-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(29,158,117,0.12); }
+  .spot-card:hover::before { transform: scaleX(1); }
+
+  .spot-number {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 2rem;
+    font-weight: 600;
+    color: rgba(29,158,117,0.08);
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1;
+  }
+
+  .spot-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-nature   { background: #E1F5EE; color: #0F6E56; }
+  .tag-culture  { background: #E6F1FB; color: #185FA5; }
+  .tag-food     { background: #FAEEDA; color: #854F0B; }
+  .tag-beach    { background: #B5D4F4; color: #0C447C; }
+  .tag-adventure{ background: #FAECE7; color: #993C1D; }
+
+  .spot-name {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+    line-height: 1.4;
+  }
+
+  .spot-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+
+  .spot-tip {
+    margin-top: 1rem;
+    padding: 8px 12px;
+    background: var(--teal-light);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--teal-dark);
+    line-height: 1.5;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .city-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .spots-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-flag">🇦🇺</div>
+  <h1>澳大利亚旅游指南</h1>
+  <p>探索澳洲最美城市，发现属于你的旅行故事</p>
+  <div class="hero-scroll">向下滚动</div>
+</section>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showCity('sydney', this)">🌉 悉尼</button>
+    <button class="nav-btn" onclick="showCity('melbourne', this)">🎨 墨尔本</button>
+    <button class="nav-btn" onclick="showCity('brisbane', this)">☀️ 布里斯班</button>
+    <button class="nav-btn" onclick="showCity('goldcoast', this)">🏄 黄金海岸</button>
+    <button class="nav-btn" onclick="showCity('cairns', this)">🐠 凯恩斯</button>
+    <button class="nav-btn" onclick="showCity('adelaide', this)">🍷 阿德莱德</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- 悉尼 -->
+  <div id="sydney" class="city-section active">
+    <div class="city-header">
+      <div class="city-icon">🌉</div>
+      <div>
+        <h2 class="city-name">悉尼<span class="city-name-en">Sydney</span></h2>
+        <p class="city-desc">澳洲最大城市，壮观海港与现代都市完美融合，是澳洲旅游的门户之城。</p>
+      </div>
+    </div>
+    <div class="spots-grid">
+      <div class="spot-card"><div class="spot-number">01</div><span class="spot-tag tag-culture">文化地标</span><div class="spot-name">悉尼歌剧院</div><div class="spot-desc">世界最具标志性的建筑之一，贝壳状屋顶令人叹为观止。可参加内部导览，欣赏世界级音乐与舞台表演。</div><div class="spot-tip">💡 推荐傍晚前往，夕阳下的歌剧院最为迷人</div></div>
+      <div class="spot-card"><div class="spot-number">02</div><span class="spot-tag tag-culture">历史建筑</span><div class="spot-name">悉尼海港大桥</div><div class="spot-desc">可步行穿越或参加BridgeClimb攀爬桥顶，俯瞰整个悉尼港全景，体验无与伦比的视觉震撼。</div><div class="spot-tip">💡 攀桥需提前预约，日出时段最受欢迎</div></div>
+      <div class="spot-card"><div class="spot-number">03</div><span class="spot-tag tag-beach">海滩</span><div class="spot-name">邦迪海滩 Bondi Beach</div><div class="spot-desc">澳洲最著名的海滩，金色沙滩绵延一公里。冲浪、晒太阳，或走邦迪到库吉的壮观海岸步道。</div><div class="spot-tip">💡 夏季（12-2月）人流最旺，建议早上前往</div></div>
+      <div class="spot-card"><div class="spot-number">04</div><span class="spot-tag tag-nature">自然风光</span><div class="spot-name">蓝山国家公园</div><div class="spot-desc">距悉尼约2小时车程，三姐妹峰、桉树森林和壮观峡谷。可乘世界最陡峭的铁路深入原始丛林。</div><div class="spot-tip">💡 建议安排一日游，秋季（3-5月）景色最美</div></div>
+      <div class="spot-card"><div class="spot-number">05</div><span class="spot-tag tag-culture">历史街区</span><div class="spot-name">岩石区 The Rocks</div><div class="spot-desc">悉尼最古老的街区，保存完好的殖民地建筑、周末市集、特色餐厅和酒吧，感受悉尼深厚历史文化。</div><div class="spot-tip">💡 周末有露天市集，适合购买特色纪念品</div></div>
+      <div class="spot-card"><div class="spot-number">06</div><span class="spot-tag tag-nature">海港风光</span><div class="spot-name">达令港 Darling Harbour</div><div class="spot-desc">繁华的海港娱乐区，汇聚海洋水族馆、野生动物园、博物馆和众多餐厅，是家庭出游的绝佳去处。</div><div class="spot-tip">💡 悉尼水族馆是亚太区最大，值得花半天时间</div></div>
+      <div class="spot-card"><div class="spot-number">07</div><span class="spot-tag tag-nature">动物</span><div class="spot-name">塔龙加动物园</div><div class="spot-desc">位于港边山丘上，可同时欣赏动物与悉尼港全景。近距离接触袋鼠、考拉等澳洲特有珍稀动物。</div><div class="spot-tip">💡 乘渡轮前往，兼得一段美丽的游船风景</div></div>
+      <div class="spot-card"><div class="spot-number">08</div><span class="spot-tag tag-food">美食购物</span><div class="spot-name">皇后维多利亚大厦 QVB</div><div class="spot-desc">建于1898年的新罗马风格建筑，现为高档购物中心。精美的彩色玻璃穹顶本身就是令人叹服的艺术品。</div><div class="spot-tip">💡 节假日有精彩装饰，是拍照打卡的绝佳地点</div></div>
+    </div>
+  </div>
+
+  <!-- 墨尔本 -->
+  <div id="melbourne" class="city-section">
+    <div class="city-header">
+      <div class="city-icon">🎨</div>
+      <div>
+        <h2 class="city-name">墨尔本<span class="city-name-en">Melbourne</span></h2>
+        <p class="city-desc">澳洲文化之都，咖啡、艺术与美食的天堂，多次荣获全球最宜居城市榜首。</p>
+      </div>
+    </div>
+    <div class="spots-grid">
+      <div class="spot-card"><div class="spot-number">01</div><span class="spot-tag tag-culture">街头艺术</span><div class="spot-name">霍西尔巷 Hosier Lane</div><div class="spot-desc">全球最著名的涂鸦街之一，每天都有新作品诞生，是墨尔本独特艺术精神的最佳象征与展示地。</div><div class="spot-tip">💡 每天作品都可能更新，值得多次探访</div></div>
+      <div class="spot-card"><div class="spot-number">02</div><span class="spot-tag tag-nature">自然风光</span><div class="spot-name">大洋路 Great Ocean Road</div><div class="spot-desc">世界最美海岸公路之一，十二使徒岩是必看奇景。沿途还有雨林、灯塔和众多隐秘美丽的海湾。</div><div class="spot-tip">💡 建议租车自驾，全程约2-3天最为尽兴</div></div>
+      <div class="spot-card"><div class="spot-number">03</div><span class="spot-tag tag-food">美食市场</span><div class="spot-name">维多利亚女王市场</div><div class="spot-desc">南半球最大的露天市场，有150年历史。新鲜食材、特色美食、手工艺品应有尽有，感受真实的墨尔本生活。</div><div class="spot-tip">💡 周日有专属手工艺品市集，周六最为热闹</div></div>
+      <div class="spot-card"><div class="spot-number">04</div><span class="spot-tag tag-culture">博物馆</span><div class="spot-name">墨尔本博物馆</div><div class="spot-desc">澳洲最大的博物馆，涵盖自然历史、科学、文化和原住民展览，适合全家游览，通常需要3-4小时。</div><div class="spot-tip">💡 门票合理，学生和儿童有优惠</div></div>
+      <div class="spot-card"><div class="spot-number">05</div><span class="spot-tag tag-culture">城市地标</span><div class="spot-name">弗林德斯街车站</div><div class="spot-desc">墨尔本最具代表性的地标，金黄色建筑见证了城市百年历史。站前广场是当地人经典约会聚集地。</div><div class="spot-tip">💡 节假日有特别装饰，可免费进入大厅参观</div></div>
+      <div class="spot-card"><div class="spot-number">06</div><span class="spot-tag tag-nature">动物奇观</span><div class="spot-name">菲利普岛企鹅归巢</div><div class="spot-desc">每天日落后，数百只小蓝企鹅从海中列队归来的壮观景象，是澳洲最受欢迎的自然奇观之一。</div><div class="spot-tip">💡 距墨尔本约1.5小时，需提前预购门票</div></div>
+      <div class="spot-card"><div class="spot-number">07</div><span class="spot-tag tag-food">咖啡文化</span><div class="spot-name">市中心咖啡巷弄</div><div class="spot-desc">Degraves Street、Centre Place等小巷藏着无数精品咖啡馆，墨尔本咖啡文化举世闻名，是咖啡爱好者的朝圣地。</div><div class="spot-tip">💡 试试澳式Flat White，比拿铁更浓郁醇厚</div></div>
+    </div>
+  </div>
+
+  <!-- 布里斯班 -->
+  <div id="brisbane" class="city-section">
+    <div class="city-header">
+      <div class="city-icon">☀️</div>
+      <div>
+        <h2 class="city-name">布里斯班<span class="city-name-en">Brisbane</span></h2>
+        <p class="city-desc">阳光之城，充满活力的现代都市与自然完美结合，2032年奥运会主办城市。</p>
+      </div>
+    </div>
+    <div class="spots-grid">
+      <div class="spot-card"><div class="spot-number">01</div><span class="spot-tag tag-nature">城市公园</span><div class="spot-name">南岸公园 South Bank</div><div class="spot-desc">城市中心的人工海滩与公园，全年开放的免费泳池、美术馆、博物馆和露天餐厅，是布里斯班最受欢迎的休闲地。</div><div class="spot-tip">💡 周末有农夫市集，夜晚灯光格外迷人</div></div>
+      <div class="spot-card"><div class="spot-number">02</div><span class="spot-tag tag-adventure">高空体验</span><div class="spot-name">故事桥攀爬 Story Bridge</div><div class="spot-desc">可攀爬布里斯班标志性大桥，俯瞰蜿蜒的布里斯班河与城市全景，体验城市高空的无限刺激。</div><div class="spot-tip">💡 夜间攀桥更为壮观，有日落和夜晚两个时段</div></div>
+      <div class="spot-card"><div class="spot-number">03</div><span class="spot-tag tag-nature">动物</span><div class="spot-name">龙柏考拉保护区</div><div class="spot-desc">可以抱考拉合影的知名保护区，还有袋鼠、袋熊、鳄鱼等澳洲特有动物，是认识澳洲野生动物的好地方。</div><div class="spot-tip">💡 抱考拉合影需额外付费，建议提前预订</div></div>
+      <div class="spot-card"><div class="spot-number">04</div><span class="spot-tag tag-culture">文化艺术</span><div class="spot-name">昆士兰文化中心</div><div class="spot-desc">集昆士兰美术馆、现代艺术馆、博物馆、表演艺术中心于一体，是布里斯班文化艺术的核心地带。</div><div class="spot-tip">💡 大部分常设展览完全免费开放</div></div>
+      <div class="spot-card"><div class="spot-number">05</div><span class="spot-tag tag-nature">自然岛屿</span><div class="spot-name">摩顿岛 Moreton Island</div><div class="spot-desc">距布里斯班仅75分钟船程，有澳洲最高沙丘，可沙板滑沙、浮潜、喂野生海豚，是绝佳一日游目的地。</div><div class="spot-tip">💡 野生海豚每天傍晚上岸，场面十分震撼</div></div>
+      <div class="spot-card"><div class="spot-number">06</div><span class="spot-tag tag-food">夜市美食</span><div class="spot-name">Eat Street夜市</div><div class="spot-desc">由废弃货运集装箱改建的特色夜市，汇聚来自全球的美食摊位，布里斯班人最爱的周末消遣好去处。</div><div class="spot-tip">💡 仅周五至周日开放，建议提前查询营业时间</div></div>
+      <div class="spot-card"><div class="spot-number">07</div><span class="spot-tag tag-nature">城市绿地</span><div class="spot-name">新农场公园 New Farm Park</div><div class="spot-desc">布里斯班最美的玫瑰园，秋季玫瑰盛开时美不胜收。沿布里斯班河散步，享受悠闲的本地生活节奏。</div><div class="spot-tip">💡 9-10月玫瑰盛放，是拍照的最佳时机</div></div>
+    </div>
+  </div>
+
+  <!-- 黄金海岸 -->
+  <div id="goldcoast" class="city-section">
+    <div class="city-header">
+      <div class="city-icon">🏄</div>
+      <div>
+        <h2 class="city-name">黄金海岸<span class="city-name-en">Gold Coast</span></h2>
+        <p class="city-desc">冲浪者的天堂，主题乐园与绝美海滩的完美组合，澳洲最受欢迎的度假胜地。</p>
+      </div>
+    </div>
+    <div class="spots-grid">
+      <div class="spot-card"><div class="spot-number">01</div><span class="spot-tag tag-beach">海滩</span><div class="spot-name">冲浪者天堂 Surfers Paradise</div><div class="spot-desc">黄金海岸最标志性的海滩，绵延白色沙滩与高楼大厦相映成趣。夜晚海滨步道灯火辉煌，热闹非凡。</div><div class="spot-tip">💡 清晨冲浪者最多，适合观看专业冲浪表演</div></div>
+      <div class="spot-card"><div class="spot-number">02</div><span class="spot-tag tag-adventure">主题乐园</span><div class="spot-name">梦幻世界 Dreamworld</div><div class="spot-desc">澳洲最大的主题乐园，有刺激过山车、老虎展区和澳洲动物区，适合全家出行，可尽情玩上一整天。</div><div class="spot-tip">💡 购买联票可同时游览白水世界，更加划算</div></div>
+      <div class="spot-card"><div class="spot-number">03</div><span class="spot-tag tag-adventure">主题乐园</span><div class="spot-name">华纳兄弟电影世界</div><div class="spot-desc">澳洲唯一的华纳主题乐园，DC超级英雄、疯狂麦克斯等经典IP，还有精彩的好莱坞特技飞车表演。</div><div class="spot-tip">💡 工作日人流较少，游玩体验更加顺畅</div></div>
+      <div class="spot-card"><div class="spot-number">04</div><span class="spot-tag tag-nature">热带雨林</span><div class="spot-name">春溪国家公园</div><div class="spot-desc">距黄金海岸仅30分钟车程，热带雨林、壮观瀑布、萤火虫洞穴，与海滩截然不同的神秘自然体验。</div><div class="spot-tip">💡 夜晚萤火虫洞需导游带领，务必提前预约</div></div>
+      <div class="spot-card"><div class="spot-number">05</div><span class="spot-tag tag-beach">宁静海滩</span><div class="spot-name">柯伦宾海滩 Currumbin</div><div class="spot-desc">比冲浪者天堂更安静的海滩，附近的野生动物保护区可免费喂彩虹鹦鹉，色彩斑斓令人难以忘怀。</div><div class="spot-tip">💡 早7:30和下午4:00是喂鹦鹉的最佳时间</div></div>
+      <div class="spot-card"><div class="spot-number">06</div><span class="spot-tag tag-adventure">观景台</span><div class="spot-name">Q1大楼观景台</div><div class="spot-desc">南半球最高住宅楼，77层观景台可360度俯瞰整个黄金海岸，海滩与热带雨林尽收眼底，视野极为壮观。</div><div class="spot-tip">💡 日落前1小时上去，可同时欣赏白天和夜景</div></div>
+      <div class="spot-card"><div class="spot-number">07</div><span class="spot-tag tag-food">本地生活</span><div class="spot-name">宽湾 Broadbeach</div><div class="spot-desc">比冲浪者天堂更有本地气息的区域，有众多优质餐厅、酒吧，Pacific Fair是昆士兰最大的购物商场。</div><div class="spot-tip">💡 晚餐时段餐厅通常需要提前预订</div></div>
+    </div>
+  </div>
+
+  <!-- 凯恩斯 -->
+  <div id="cairns" class="city-section">
+    <div class="city-header">
+      <div class="city-icon">🐠</div>
+      <div>
+        <h2 class="city-name">凯恩斯<span class="city-name-en">Cairns</span></h2>
+        <p class="city-desc">大堡礁的门户，热带天堂与世界级自然奇观的起点，冒险者的梦想目的地。</p>
+      </div>
+    </div>
+    <div class="spots-grid">
+      <div class="spot-card"><div class="spot-number">01</div><span class="spot-tag tag-nature">世界奇观</span><div class="spot-name">大堡礁 Great Barrier Reef</div><div class="spot-desc">世界最大珊瑚礁系统，联合国教科文组织世界遗产。浮潜或潜水，与五彩珊瑚和热带鱼共游，是一生必去的神圣体验。</div><div class="spot-tip">💡 从凯恩斯出发有多种船团可选，提前预订更便宜</div></div>
+      <div class="spot-card"><div class="spot-number">02</div><span class="spot-tag tag-nature">古老雨林</span><div class="spot-name">丹翠雨林 Daintree Rainforest</div><div class="spot-desc">世界上最古老的热带雨林，已有1.8亿年历史。乘船游河道、寻找鳄鱼，体验原始丛林的神秘与壮观。</div><div class="spot-tip">💡 与大堡礁同日游可能太赶，建议分两天进行</div></div>
+      <div class="spot-card"><div class="spot-number">03</div><span class="spot-tag tag-adventure">高空缆车</span><div class="spot-name">Skyrail热带雨林缆车</div><div class="spot-desc">全球最长的热带雨林缆车，俯瞰整片原始丛林与远处海岸线，可在中途站下车徒步探索雨林栈道。</div><div class="spot-tip">💡 可与库兰达小火车组合，去程缆车回程火车</div></div>
+      <div class="spot-card"><div class="spot-number">04</div><span class="spot-tag tag-culture">雨林小镇</span><div class="spot-name">库兰达村 Kuranda</div><div class="spot-desc">藏在雨林中的神秘小村庄，有热闹的手工艺品市集、蝴蝶园、鸟类世界，乘古老历史小火车前往更添乐趣。</div><div class="spot-tip">💡 市集只在周三至周日开放</div></div>
+      <div class="spot-card"><div class="spot-number">05</div><span class="spot-tag tag-beach">海滨小镇</span><div class="spot-name">棕榈湾 Palm Cove</div><div class="spot-desc">凯恩斯北边最美的海滨小镇，棕榈树成荫的海滨大道、精品酒店和餐厅，是悠闲度假的理想之地。</div><div class="spot-tip">💡 比凯恩斯市区安静许多，适合蜜月或放松假期</div></div>
+      <div class="spot-card"><div class="spot-number">06</div><span class="spot-tag tag-nature">高原风光</span><div class="spot-name">阿瑟顿高原 Atherton Tablelands</div><div class="spot-desc">凯恩斯内陆高原，有壮观的火山口湖、瀑布和茶园。骑马、皮划艇、观鸟，是远离海滩的另一面澳洲。</div><div class="spot-tip">💡 租车自驾一日游，可串联多个精彩景点</div></div>
+      <div class="spot-card"><div class="spot-number">07</div><span class="spot-tag tag-nature">城市休闲</span><div class="spot-name">凯恩斯滨海泳池</div><div class="spot-desc">凯恩斯市区的免费人工泻湖，因市区海滩不适合游泳，这里成为本地人和游客最爱的消暑好去处。</div><div class="spot-tip">💡 完全免费开放，是感受当地生活的好地方</div></div>
+    </div>
+  </div>
+
+  <!-- 阿德莱德 -->
+  <div id="adelaide" class="city-section">
+    <div class="city-header">
+      <div class="city-icon">🍷</div>
+      <div>
+        <h2 class="city-name">阿德莱德<span class="city-name-en">Adelaide</span></h2>
+        <p class="city-desc">南澳首府，葡萄酒、美食与艺术的精致之城，澳洲最慢节奏、最优雅的城市。</p>
+      </div>
+    </div>
+    <div class="spots-grid">
+      <div class="spot-card"><div class="spot-number">01</div><span class="spot-tag tag-food">美食市场</span><div class="spot-name">中央市场 Central Market</div><div class="spot-desc">南半球最大的室内食品市场，有150年历史。新鲜农产品、南澳特色食材、各国美食，感受阿德莱德美食文化必去之地。</div><div class="spot-tip">💡 周二至周六开放，周六最为热闹丰富</div></div>
+      <div class="spot-card"><div class="spot-number">02</div><span class="spot-tag tag-food">葡萄酒</span><div class="spot-name">芭罗萨山谷 Barossa Valley</div><div class="spot-desc">世界顶级葡萄酒产区，距阿德莱德仅1小时。品鉴世界级设拉子红酒，参观古老酒庄，享受田园牧歌风光。</div><div class="spot-tip">💡 建议参加有导游的酒庄一日游，可以尽情品酒</div></div>
+      <div class="spot-card"><div class="spot-number">03</div><span class="spot-tag tag-nature">野生动物</span><div class="spot-name">袋鼠岛 Kangaroo Island</div><div class="spot-desc">被称为"澳洲诺亚方舟"，生活着大量野生袋鼠、考拉、海狮和企鹅。壮观的奇岩怪石海岸令人叹为观止。</div><div class="spot-tip">💡 至少需要两天才能充分游览，强烈建议过夜</div></div>
+      <div class="spot-card"><div class="spot-number">04</div><span class="spot-tag tag-culture">文化博物馆</span><div class="spot-name">南澳大利亚博物馆</div><div class="spot-desc">馆藏丰富的原住民文化展品，收藏全球最重要的澳洲原住民人类学藏品，了解澳洲本土文化的绝佳场所。</div><div class="spot-tip">💡 完全免费，建议花2-3小时细细游览</div></div>
+      <div class="spot-card"><div class="spot-number">05</div><span class="spot-tag tag-nature">山脉风光</span><div class="spot-name">弗林德斯山脉</div><div class="spot-desc">南澳最壮观的山脉景观，古老的岩石峡谷、原住民岩画、徒步小道，日出日落时分色彩变幻如同一幅画。</div><div class="spot-tip">💡 距阿德莱德约5小时，建议安排2-3天时间</div></div>
+      <div class="spot-card"><div class="spot-number">06</div><span class="spot-tag tag-culture">文化轴线</span><div class="spot-name">北台阶 North Terrace</div><div class="spot-desc">阿德莱德文化轴线，沿街有南澳博物馆、美术馆、图书馆、大学等众多文化机构，城市精华的集中展示。</div><div class="spot-tip">💡 步行即可串联所有景点，适合半日文化游</div></div>
+      <div class="spot-card"><div class="spot-number">07</div><span class="spot-tag tag-culture">德式小镇</span><div class="spot-name">汉多夫小镇 Hahndorf</div><div class="spot-desc">澳洲最古老的德国移民小镇，距阿德莱德28公里。德式建筑、烟熏香肠、精酿啤酒和手工艺品，别具异国风情。</div><div class="spot-tip">💡 周末较拥挤，工作日前往更为悠闲惬意</div></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>🇦🇺 澳大利亚旅游指南 · 探索六大城市之美</p>
+  <p style="margin-top:6px; font-size:12px;">持续更新中，欢迎分享给朋友</p>
+</footer>
+
+<script>
+function showCity(id, btn) {
+  document.querySelectorAll('.city-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.nav').offsetTop, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
